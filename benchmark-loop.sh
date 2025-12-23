@@ -1,6 +1,9 @@
 #!/usr/bin/bash
 EDIT_FORMATS=$(shuf formats.list)
 MODELS=$(shuf models.list)
+if [[ -f .env ]]; then
+  source .env
+fi
 for format  in ${EDIT_FORMATS}; do
   for model in ${MODELS}; do
   ./benchmark/benchmark.py ${model}-${format} \
