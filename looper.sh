@@ -3,7 +3,7 @@ EDIT_FORMATS=$(shuf formats.list)
 MODELS=$(shuf models.list)
 for format  in ${EDIT_FORMATS}; do
   for model in ${MODELS}; do
-  echo ./benchmark/benchmark.py ${model}-${format} \
+  ./benchmark/benchmark.py ${model}-${format} \
     --new \
     --model "ollama_chat/${model}" \
     --edit-format ${format} \
