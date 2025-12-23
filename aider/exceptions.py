@@ -20,7 +20,7 @@ EXCEPTIONS = [
         "The API provider is not able to authenticate you. Check your API key.",
     ),
     ExInfo("AzureOpenAIError", True, None),
-    ExInfo("BadGatewayError", True, None),
+    ExInfo("BadGatewayError", True, "The API provider's servers are down or overloaded."),
     ExInfo("BadRequestError", False, None),
     ExInfo("BudgetExceededError", True, None),
     ExInfo(
@@ -30,7 +30,7 @@ EXCEPTIONS = [
     ),
     ExInfo("ContextWindowExceededError", False, None),  # special case handled in base_coder
     ExInfo("ErrorEventError", True, None),
-    ExInfo("ImageFetchError", True, "The API cannot fetch an image"),
+    ExInfo("ImageFetchError", False, "The API provider was unable to fetch one or more images."),
     ExInfo("InternalServerError", True, "The API provider's servers are down or overloaded."),
     ExInfo("InvalidRequestError", True, None),
     ExInfo("JSONSchemaValidationError", True, None),
