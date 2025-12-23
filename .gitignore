@@ -29,7 +29,6 @@
 !/pytest.ini
 !/README.md
 !/requirements.txt
-!/looper.sh
 !/benchmark-loop.sh
 !/formats.list
 !/build-models.list.sh
