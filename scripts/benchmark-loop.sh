@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-EDIT_FORMATS=$(shuf formats.list)
+EDIT_FORMATS=$(shuf benchmark/formats.list)
 MODELS=$(shuf models.list)
 if [[ -f .env ]]; then
   source .env
