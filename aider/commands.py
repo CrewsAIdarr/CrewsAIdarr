@@ -211,6 +211,7 @@ class Commands:
                     "context",
                     "Automatically identify which files will need to be edited.",
                 ),
+                ("crewsaider", "Work with a CrewAI model to design code changes, and a CrewAI editor."),
             ]
         )
 
@@ -1568,6 +1569,9 @@ class Commands:
     def completions_architect(self):
         raise CommandCompletionException()
 
+    def completions_crewsaider(self):
+        raise CommandCompletionException()
+
     def completions_context(self):
         raise CommandCompletionException()
 
@@ -1585,6 +1589,10 @@ class Commands:
     async def cmd_architect(self, args):
         """Enter architect/editor mode using 2 different models. If no prompt provided, switches to architect/editor mode."""  # noqa
         return await self._generic_chat_command(args, "architect")
+
+    async def cmd_crewsaider(self, args):
+        """Enter crewsaider/editor mode using 2 different models. If no prompt provided, switches to crewsaider/editor mode."""  # noqa
+        return await self._generic_chat_command(args, "crewsaider")
 
     async def cmd_context(self, args):
         """Enter context mode to see surrounding code context. If no prompt provided, switches to context mode."""  # noqa
