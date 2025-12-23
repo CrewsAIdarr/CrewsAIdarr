@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 : ${EDIT_FORMATS:=$(shuf benchmark/formats.list)}
 : ${MODELS:=$(shuf models.list)}
-: ${BENCH_CMD:='./benchmark/benchmark_classic.py'}
+: ${BENCH_CMD:='./benchmark/benchmark.py'}
 if [[ -f .env ]]; then
   source .env
 fi
