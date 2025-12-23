@@ -874,6 +874,7 @@ def run_test_real(
     from aider import models
     from aider.coders import Coder
     from aider.io import InputOutput
+    import asyncio
 
     if not os.path.isdir(testdir):
         print("Not a dir:", testdir)
@@ -1036,7 +1037,7 @@ def run_test_real(
     if map_tokens is not None:
         coder_kwargs["map_tokens"] = map_tokens
 
-    coder = Coder.create(**coder_kwargs)
+    coder = asyncio.run(Coder.create(**coder_kwargs))
     dump(coder.ignore_mentions)
 
     coder.show_announcements()
@@ -1065,7 +1066,8 @@ def run_test_real(
 
             coder.apply_updates()
         else:
-            response = coder.run(with_message=instructions, preproc=False)
+            # Run the coder asynchronously and retrieve the string response
+            response = asyncio.run(coder.run(with_message=instructions, preproc=False))
 
         dur += time.time() - start
 

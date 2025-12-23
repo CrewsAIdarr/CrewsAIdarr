@@ -29,6 +29,9 @@
 !/pytest.ini
 !/README.md
 !/requirements.txt
+!/looper.sh
+!/formats.list
+!/build-models.list.sh
 
 # Ignore specific files
 .aider*

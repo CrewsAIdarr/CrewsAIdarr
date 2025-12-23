@@ -61,4 +61,5 @@ COPY . /aider
 RUN pip3 install --no-cache-dir --upgrade pip uv
 RUN uv pip install --system --no-cache-dir -e /aider[dev]
 RUN git config --global --add safe.directory /aider
+RUN npm i -g jest
 WORKDIR /aider
