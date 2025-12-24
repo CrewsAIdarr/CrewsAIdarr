@@ -152,7 +152,7 @@ def main(
         -1, "--num-tests", "-n", help="Number of tests to run"
     ),
     num_ctx: Optional[int] = typer.Option(
-        None, "--num-ctx", help="Override model context window size"
+        None, "--num-ctx", help="Override model context size"
     ),
     read_model_settings: str = typer.Option(
         None, "--read-model-settings", help="Load aider model settings from YAML file"
@@ -279,6 +279,12 @@ def main(
     def get_exercise_dirs(
         base_dir, languages=None, sets=None, hash_re=None, legacy=False
     ):
+        """
+        Return a list of exercise directories.
+
+        If ``legacy`` is True, or if no ``cat.yaml`` files are found, fall back to the
+        legacy directory layout (``exercises/practice``) used by ``benchmark.py``.
+        """
         if legacy:
             return legacy_get_exercise_dirs(base_dir, languages)
 
@@ -315,6 +321,12 @@ def main(
                 continue
 
             exercise_dirs.append(cat_file.parent)
+
+        if not exercise_dirs:
+            logger.info(
+                "No cat.yaml files found; falling back to legacy exercise layout."
+            )
+            return legacy_get_exercise_dirs(base_dir, languages)
 
         logger.info(f"Found {len(exercise_dirs)} cats")
         return exercise_dirs
@@ -1019,7 +1031,7 @@ async def run_test_real(
     if thinking_tokens is not None:
         main_model.set_thinking_tokens(thinking_tokens)
 
-    dump(main_model.max_chat_history_tokens)
+    dump(main_model.max_chat_chat_history_tokens)
 
     if num_ctx:
         if not main_model.extra_params:
@@ -1125,9 +1137,6 @@ async def run_test_real(
         try:
             errors = run_unit_tests(original_dname, testdir, history_fname, test_files)
         except subprocess.TimeoutExpired:
-            # try:
-            #    errors = run_unit_tests(original_dname, testdir, history_fname, test_files)
-            # except subprocess.TimeoutExpired:
             errors = "Tests timed out!"
             timeouts += 1
 
@@ -1143,9 +1152,7 @@ async def run_test_real(
         errors = errors.splitlines()
 
         syntax_errors += sum(1 for line in errors if line.startswith("SyntaxError"))
-        indentation_errors += sum(
-            1 for line in errors if line.startswith("IndentationError")
-        )
+        indentation_errors += sum(1 for line in errors if line.startswith("IndentationError"))
 
         logger.info(errors[-1])
         errors = "\n".join(errors)
@@ -1199,7 +1206,7 @@ async def run_test_real(
         num_malformed_responses=coder.num_malformed_responses,
         syntax_errors=syntax_errors,
         indentation_errors=indentation_errors,
-        lazy_comments=lazy_comments,  # Add the count of pattern matches to the results
+        lazy_comments=lazy_comments,
         reasoning_effort=reasoning_effort,
         prompt_tokens=coder.total_tokens_sent,
         completion_tokens=coder.total_tokens_received,
