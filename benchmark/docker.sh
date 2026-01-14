@@ -1,15 +1,16 @@
 #!/bin/bash
 
-# FIXME - should be able to choose the keys to pass internal
-#
 docker run \
   -it --rm \
   --memory=12g \
   --memory-swap=12g \
+  --net=host \
   --add-host=host.docker.internal:host-gateway \
   -v $(pwd):/cecli \
   -v $(pwd)/tmp.benchmarks/.:/benchmarks \
-  -e GEMINI_API_KEY=$GEMINI_API_KEY \
+  -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+  -e GEMINI_API_KEY="$GEMINI_API_KEY" \
+  -e HISTFILE=/cecli/.bash_history \
   -e PROMPT_COMMAND='history -a' \
   -e HISTCONTROL=ignoredups \
   -e HISTSIZE=10000 \

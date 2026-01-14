@@ -1,0 +1,47 @@
+#FROM buildpack-deps:trixie
+FROM astral/uv:python3.11-trixie
+
+ADD https://sh.rustup.rs /tmp/rustup.sh
+
+RUN apt-get update \
+  && apt-get install -yqq \
+  cmake libboost-all-dev ca-certificates-java wireguard openjdk-21-jdk libtbb-dev \
+  && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+  && curl -fsSL https://ollama.com/install.sh | sh - \
+  && chmod +x /tmp/rustup.sh && /tmp/rustup.sh -y && rm /tmp/rustup.sh \
+  && apt-get install -yqq nodejs \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install Go with architecture detection
+RUN ARCH=$(uname -m) && \
+  if [ "$ARCH" = "x86_64" ]; then \
+      GOARCH="amd64"; \
+  elif [ "$ARCH" = "aarch64" ]; then \
+      GOARCH="arm64"; \
+  else \
+      false; \
+  fi && \
+  curl -L "https://golang.org/dl/go1.21.5.linux-$GOARCH.tar.gz" -o go.tar.gz && \
+  tar -C /usr/local -xzf go.tar.gz && \
+  rm go.tar.gz
+ENV PATH="/root/.cargo/bin:/usr/local/go/bin:${PATH}"
+
+RUN mkdir -p /npm-install \
+  && cd /npm-install \
+  && npm init -y \
+  && npm i -g jest \
+  && npm install \
+  @babel/core@7.25.2 \
+  @exercism/babel-preset-javascript@0.2.1 \
+  @exercism/eslint-config-javascript@0.6.0 \
+  @types/jest@29.5.12 \
+  @types/node@20.12.12 \
+  babel-jest@29.6.4 \
+  core-js@3.37.1 \
+  eslint@8.49.0
+
+# RUN pip3 install --no-cache-dir --upgrade pip uv
+COPY . /cecli
+RUN uv pip install --system --no-cache-dir -e /cecli[dev] \
+  && git config --global --add safe.directory /cecli
+WORKDIR /cecli

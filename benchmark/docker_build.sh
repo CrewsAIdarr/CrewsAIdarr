@@ -1,8 +1,10 @@
 #!/bin/bash
+: "${DOCKERFILE:=benchmark/Dockerfile}"
+: "${TAG:=cecli-cat}"
 
 set -e
 
 docker build \
-  --file benchmark/Dockerfile \
-  -t cecli-cat \
+  --file "${DOCKERFILE}" \
+  -t "${TAG}"  \
   .
